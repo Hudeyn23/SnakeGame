@@ -1,8 +1,9 @@
 package com.example.snakegame;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Model {
     Field field;
@@ -11,40 +12,110 @@ public class Model {
     private int sizex;
     private int sizey;
     private List<Cell> emptyCells;
-    private int round = 0;
+    private List<Cell> foodCells;
+    private final Coord UP = new Coord(0, 1);
+    private final Coord DOWN = new Coord(0, -1);
+    private final Coord LEFT = new Coord(-1, 0);
+    private final Coord RIGHT = new Coord(1, 0);
 
     public Model(int sizex, int sizey) {
         this.sizex = sizex;
         this.sizey = sizey;
         field = new Field(sizex, sizey);
-        snakes = new HashMap<>();
+        snakes = new ConcurrentHashMap<>();
+    }
+
+    public void setTurn(int id, MoveDirection moveDirection) {
+        Snake snake = snakes.get(id);
+        if (snake.getMoveDirection() == MoveDirection.UP || snake.getMoveDirection() == MoveDirection.DOWN) {
+            if (moveDirection == MoveDirection.LEFT || moveDirection == MoveDirection.RIGHT) {
+                snake.setMoveDirection(moveDirection);
+            }
+        }
+        if (snake.getMoveDirection() == MoveDirection.LEFT || snake.getMoveDirection() == MoveDirection.RIGHT) {
+            if (moveDirection == MoveDirection.UP || moveDirection == MoveDirection.DOWN) {
+                snake.setMoveDirection(moveDirection);
+            }
+        }
 
     }
 
-    public int setTurn(int id, int round, MoveDirection moveDirection) {
-        if (this.round == round) {
-            Snake snake = snakes.get(id);
-            snake.setMoveDirection(moveDirection);
-        }
+    public Collection<Cell> getFoodCells() {
+        return foodCells;
     }
 
-    public int addPlayer(String name) {
-        Snake snake = new Snake(++idCounter, name);
-        if (snakes.putIfAbsent(idCounter, snake) != null) {
-            return -1;
+    public Collection<Snake> getSnakes() {
+        return snakes.values();
+    }
+
+    public Snake getSnake(int id) {
+        return snakes.get(id);
+    }
+
+    public void addPlayer(String name, int id) throws SnakeException {
+        Snake snake = null;
+        Cell centreCell = null;
+        Cell secondCell = null;
+        for (Cell cell : emptyCells) {
+            boolean isBreak = false;
+            Cell begin = field.getCell((cell.getCoord().getX() - 2) % sizex, (cell.getCoord().getY() + 2) % sizey);
+            for (int i = 0; i < 5; i++) {
+                if (isBreak) {
+                    break;
+                }
+                for (int j = 0; j < 5; j++) {
+                    if (field.getCell((begin.getCoord().getX() + i) % sizex, (begin.getCoord().getY() - j) % sizey).getSnake() != null) {
+                        isBreak = true;
+                        break;
+                    }
+                }
+            }
+            if (isBreak)
+                continue;
+            if ((secondCell = field.getCell(cell.getCoord().getX(), (cell.getCoord().getY() + 1) % sizey)).isEmpty()) {
+                snake = new Snake(id, name, MoveDirection.DOWN);
+                secondCell.setSnake(snake);
+                snake.getCoordList().add(secondCell.getCoord());
+                snake.getCoordList().add(DOWN);
+            }
+            if ((secondCell = field.getCell(cell.getCoord().getX(), (cell.getCoord().getY() - 1) % sizey)).isEmpty()) {
+                snake = new Snake(id, name, MoveDirection.UP);
+                secondCell.setSnake(snake);
+                snake.getCoordList().add(secondCell.getCoord());
+                snake.getCoordList().add(UP);
+            }
+            if ((secondCell = field.getCell((cell.getCoord().getX() + 1) % sizex, cell.getCoord().getY())).isEmpty()) {
+                snake = new Snake(id, name, MoveDirection.LEFT);
+                secondCell.setSnake(snake);
+                snake.getCoordList().add(secondCell.getCoord());
+                snake.getCoordList().add(LEFT);
+            }
+            if ((secondCell = field.getCell((cell.getCoord().getX() - 1) % sizex, cell.getCoord().getY())).isEmpty()) {
+                snake = new Snake(id, name, MoveDirection.RIGHT);
+                secondCell.setSnake(snake);
+                snake.getCoordList().add(secondCell.getCoord());
+                snake.getCoordList().add(RIGHT);
+            }
+            if (snake == null)
+                break;
+            centreCell = cell;
+            centreCell.setSnake(snake);
+            break;
         }
-        return idCounter;
+        if (centreCell == null) {
+            throw new SnakeException("no 5x5 available field");
+        }
     }
 
     public void makeTurns() {
         for (Snake snake : snakes.values()) {
             MoveDirection direction = snake.getMoveDirection();
             Coord headCoord = snake.getHeadCoord();
-            if (direction == MoveDirection.FORWARD) {
+            if (direction == MoveDirection.UP) {
                 Cell cell = field.getCell(headCoord.getX(), (headCoord.getY() + 1) % sizey);
                 move(snake, cell, direction);
             }
-            if (direction == MoveDirection.BACKWARD) {
+            if (direction == MoveDirection.DOWN) {
                 Cell cell = field.getCell(headCoord.getX(), (headCoord.getY() - 1) % sizey);
                 move(snake, cell, direction);
             }
@@ -91,14 +162,14 @@ public class Model {
     }
 
     private void addCellToList(Snake snake, MoveDirection direction) {
-        if (direction == MoveDirection.FORWARD)
-            snake.getCoordList().add(new Coord(0, 1));
-        if (direction == MoveDirection.BACKWARD)
-            snake.getCoordList().add(new Coord(0, 0));
+        if (direction == MoveDirection.UP)
+            snake.getCoordList().add(UP);
+        if (direction == MoveDirection.DOWN)
+            snake.getCoordList().add(DOWN);
         if (direction == MoveDirection.RIGHT)
-            snake.getCoordList().add(new Coord(1, 0));
+            snake.getCoordList().add(RIGHT);
         if (direction == MoveDirection.LEFT)
-            snake.getCoordList().add(new Coord(-1, 0));
+            snake.getCoordList().add(LEFT);
     }
 
 }
