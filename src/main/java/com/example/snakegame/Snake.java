@@ -1,34 +1,29 @@
 package com.example.snakegame;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Snake {
     private int snakeId;
-    private String name;
     private List<Coord> coordList;
-    private Coord headCoord;
     private boolean turnDone;
-    private int length;
     private boolean alive;
     private int score = 0;
     MoveDirection moveDirection;
-
-    public Coord getHeadCoord() {
-        return headCoord;
-    }
-
-    public void setHeadCoord(Coord headCoord) {
-        this.headCoord = headCoord;
-    }
 
     public void setMoveDirection(MoveDirection moveDirection) {
         this.moveDirection = moveDirection;
     }
 
-    public Snake(int snakeId, String name, MoveDirection moveDirection) {
+    public Snake(int snakeId, MoveDirection moveDirection) {
         this.snakeId = snakeId;
-        this.name = name;
         this.moveDirection = moveDirection;
+        coordList = new ArrayList<>();
+        alive = true;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     public int getSnakeId() {

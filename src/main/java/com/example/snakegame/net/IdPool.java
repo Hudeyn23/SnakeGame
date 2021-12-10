@@ -1,4 +1,4 @@
-package com.example.snakegame;
+package com.example.snakegame.net;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -26,6 +26,9 @@ public class IdPool {
         return idQueue.remove();
     }
 
+    public void getId(int id){
+        idQueue.remove(id);
+    }
     public void freeId(int id) {
         idQueue.add(id);
     }

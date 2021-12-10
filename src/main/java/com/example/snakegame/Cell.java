@@ -25,16 +25,22 @@ public class Cell {
         return isEmpty;
     }
 
-    public void setEmpty(boolean empty) {
-        isEmpty = empty;
+    public void setEmpty() {
+        isEmpty = true;
+        isFood = false;
+        snake = null;
     }
 
-    public void setFood(boolean food) {
-        isFood = food;
+    public void setFood() {
+        isFood = true;
+        isEmpty = false;
+        snake = null;
     }
 
     public void setSnake(Snake snake) {
         this.snake = snake;
+        isFood = false;
+        isEmpty = false;
     }
 
     public boolean isFood() {

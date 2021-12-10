@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.snakegame.ui.MainController">
+   <children>
+      <Button id="startGame" fx:id="startGameBtn" layoutX="101.0" layoutY="53.0" mnemonicParsing="false" onAction="#startGame" prefHeight="38.0" prefWidth="99.0" text="Start game" />
+      <Button id="findGame" fx:id="findGameBtn" layoutX="101.0" layoutY="131.0" mnemonicParsing="false" onAction="#findGame" prefHeight="38.0" prefWidth="99.0" text="Find game" />
+      <Button id="exit" fx:id="exitBtn" layoutX="221.0" layoutY="248.0" minHeight="15.0" mnemonicParsing="false" onAction="#exit" prefHeight="38.0" prefWidth="65.0" text="Exit" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS" />
+   </children>
+</AnchorPane>

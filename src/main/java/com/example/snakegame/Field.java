@@ -5,6 +5,10 @@ public class Field {
     private int sizeX;
     private int sizeY;
 
+    public Cell[][] getField() {
+        return field;
+    }
+
     public Field(int sizeX, int sizeY) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
@@ -18,5 +22,8 @@ public class Field {
 
     public Cell getCell(int x, int y) {
         return field[x][y];
+    }
+    public Cell getCell(Coord coord) {
+        return field[coord.getX()][coord.getY()];
     }
 }

@@ -1,18 +1,29 @@
-package com.example.snakegame;
+package com.example.snakegame.net;
 
 import me.ippolitov.fit.snakes.SnakesProto;
 
-public class AcknowledgeWait implements Comparable<AcknowledgeWait> {
-    private final Long time;
-    private final SnakesProto.GameMessage gameMessage;
+import java.net.DatagramPacket;
 
-    public AcknowledgeWait(Long time, SnakesProto.GameMessage gameMessage) {
+public class AcknowledgeWait implements Comparable<AcknowledgeWait> {
+    private long time;
+    private final DatagramPacket packet;
+    private final SnakesProto.GameMessage gameMessage;
+    public AcknowledgeWait(Long time, DatagramPacket packet, SnakesProto.GameMessage gameMessage) {
         this.time = time;
+        this.packet = packet;
         this.gameMessage = gameMessage;
+    }
+
+    public DatagramPacket getPacket() {
+        return packet;
     }
 
     public SnakesProto.GameMessage getGameMessage() {
         return gameMessage;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     @Override
@@ -20,7 +31,7 @@ public class AcknowledgeWait implements Comparable<AcknowledgeWait> {
         return Long.compare(time, o.getTime());
     }
 
-    public Long getTime() {
+    public long getTime() {
         return time;
     }
 

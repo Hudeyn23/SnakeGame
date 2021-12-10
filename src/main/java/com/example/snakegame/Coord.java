@@ -1,6 +1,10 @@
 package com.example.snakegame;
 
-public class Coord {
+public final class Coord {
+    public final static Coord UP = new Coord(0, -1);
+    public final static Coord DOWN = new Coord(0, 1);
+    public final static Coord LEFT = new Coord(-1, 0);
+    public final static Coord RIGHT = new Coord(1, 0);
     private final int x;
     private final int y;
 
